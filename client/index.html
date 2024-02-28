@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>chat</title>
+    <script type="module">
+      import { io } from "https://cdn.socket.io/4.3.2/socket.io.esm.min.js";
+
+      const socket = io();
+
+      const form = document.getElementById("form");
+      const input = document.getElementById("input");
+      const messages = document.getElementById("messages");
+
+      socket.on("chat message", (msg) => {
+        const item = `<li>${msg}</li>`
+        messages.insertAdjacentHTML('beforeend', item);
+      });
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        if (input.value) {
+          socket.emit("chat message", input.value);
+          input.value = "";
+        }
+      });
+    </script>
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        display: grid;
+        height: 100vh;
+        padding: 36px 36px 100px 36px;
+        place-content: center;
+        grid-template-rows: 1fr;
+      }
+      #messages{
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      #messages > li {
+        padding: 8px 12px;
+      }
+
+      #messages > li:nth-child(odd) {
+        background-color: #000;
+      }
+
+      #chat {
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        overflow: hidden;
+        width: 350px;
+        height: 100%;
+        position: relative;
+      }
+
+      #form {
+        bottom: 0;
+        display: flex;
+        height: 48px;
+        left: 0;
+        position: absolute;
+        padding: 4px;
+        right: 0;
+      }
+
+      #input {
+        border-radius: 9999px;
+        border: 1px solid #eee;
+        flex: 1;
+        margin: 4px;
+        padding: 0 8px;
+      }
+
+      #form:focus {
+        outline: 0;
+      }
+
+      #form > button {
+        background-color: #09f;
+        color: #fff;
+        border: 0;
+        margin: 4px;
+        border-radius: 4px;
+        transition: all .3ms;
+      }
+
+      #form > button:hover{
+        background-color: rgb(2, 118, 196);
+        cursor: pointer;
+      }
+
+      :root {
+        color-scheme: light dark;
+      }
+    </style>
+  </head>
+  <body>
+    <section id="chat">
+      <ul id="messages"></ul>
+      <form id="form">
+        <input
+          type="text"
+          name="message"
+          id="input"
+          placeholder="Type a message"
+          autocomplete="off"
+        />
+        <button type="submit">Enviar</button>
+      </form>
+    </section>
+  </body>
+</html>
